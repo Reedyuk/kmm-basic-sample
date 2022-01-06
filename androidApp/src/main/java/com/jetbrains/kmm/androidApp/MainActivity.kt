@@ -9,6 +9,8 @@ import com.jetbrains.kmm.shared.Greeting
 import com.jetbrains.kmm.shared.Calculator
 import android.widget.TextView
 import com.jetbrains.androidApp.R
+import com.jetbrains.kmm.shared.initialize
+import java.io.File
 
 fun greet(): String {
     return Greeting().greeting()
@@ -45,6 +47,17 @@ class MainActivity : AppCompatActivity() {
 
         numATV.addTextChangedListener(textWatcher)
         numBTV.addTextChangedListener(textWatcher)
+
+
+        val context = applicationContext
+        val databaseFileStream = context.assets.open("default.realm")
+        val databaseFile = File(context.cacheDir, "default.realm")
+        databaseFileStream.use { inputStream ->
+            databaseFile.outputStream().use {
+                inputStream.copyTo(it)
+            }
+        }
+        initialize(databaseFile = databaseFile.absolutePath)
 
     }
 }

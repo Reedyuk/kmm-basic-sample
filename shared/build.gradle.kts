@@ -3,10 +3,16 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("io.realm.kotlin") version "0.8.0"
+    `maven-publish`
 }
 
+version = "0.0.1"
+
 kotlin {
-    android()
+    android {
+        publishAllLibraryVariants()
+    }
 
     val iosTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget =
         if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true)
@@ -22,7 +28,11 @@ kotlin {
         }
     }
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("io.realm.kotlin:library-base:0.8.0")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
